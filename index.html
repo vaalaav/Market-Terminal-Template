@@ -1,357 +1,343 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Финансовый Терминал</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            background-color: #000;
-            color: #fff;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            display: flex;
-            justify-content: center;
-            padding: 20px;
-            margin: 0;
-            min-height: 100vh;
-        }
-        
-        .dashboard {
-            width: 100%;
-            max-width: 850px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        h1 { text-align: center; font-size: 24px; margin: 10px 0 5px 0; color: #eee; }
-        .header-info { text-align: center; color: #666; font-size: 12px; margin-bottom: 25px; }
-
-        /* ВЕРХНЯЯ ПЛАШКА */
-        .info-bar {
-            margin-bottom: 30px;
-            background-color: #111;
-            border-radius: 24px;
-            padding: 20px 0;
-            border: 1px solid #222;
-            display: grid;
-            grid-template-columns: 1.2fr 1fr 1.5fr;
-            align-items: center;
-        }
-
-        .info-col {
-            padding: 0 25px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .info-col:not(:last-child) {
-            border-right: 1px solid #1a1a1a;
-        }
-
-        .info-icon { width: 38px; height: 38px; opacity: 0.9; }
-        .info-content { display: flex; flex-direction: column; }
-
-        /* Стили даты */
-        .date-main { font-size: 18px; font-weight: 600; color: #fff; }
-        .date-main span { color: #4ade80; }
-        .date-sub { font-size: 12px; color: #888; margin-top: 4px; text-transform: capitalize; }
-
-        /* Стили погоды */
-        .weather-loc { font-size: 11px; color: #888; margin-bottom: 2px; }
-        .weather-temp { font-size: 22px; font-weight: 700; color: #fff; }
-        .weather-desc { font-size: 11px; color: #666; margin-top: 2px; }
-
-        /* Стили праздников */
-        .holiday-title { font-size: 11px; color: #888; margin-bottom: 6px; }
-        .holiday-list { margin: 0; padding: 0; list-style: none; }
-        .holiday-item { 
-            color: #f59e0b;
-            font-size: 13px; 
-            font-weight: 600;
-            line-height: 1.3;
-            display: flex;
-            align-items: flex-start;
-            gap: 6px;
-            margin-bottom: 4px;
-        }
-        .holiday-item::before { content: "•"; color: #444; }
-        .no-holiday { color: #666; font-size: 13px; font-style: italic; }
-
-        /* Стили терминала */
-        .currency-block { margin-bottom: 35px; }
-        .tile {
-            background-color: #111;
-            border-radius: 24px;
-            padding: 20px;
-            border: 1px solid #222;
-            display: flex;
-            flex-direction: column;
-            min-height: 160px;
-        }
-        .tile-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #1a1a1a;
-        }
-        .currency-info { display: flex; align-items: center; gap: 15px; }
-        .currency-icon { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: #222; }
-        .currency-name { font-size: 16px; color: #999; font-weight: 500; }
-        .currency-value { font-size: 20px; font-weight: 700; color: #4ade80; font-variant-numeric: tabular-nums; }
-        .analytic-label { font-size: 10px; color: #444; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 15px; }
-        .history-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; }
-        .history-point { display: flex; flex-direction: column; align-items: center; }
-        .history-point .date { font-size: 11px; color: #555; margin-bottom: 6px; }
-        .history-point .val { font-size: 15px; color: #f59e0b; font-weight: 600; }
-        .history-point.today .date { color: #fff; font-weight: bold; }
-        .history-point.today .val { color: #4ade80; }
-        .chart-container { width: 100%; height: 120px; margin-top: 5px; }
-        .loading-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; display: flex; justify-content: center; align-items: center;
-            z-index: 1000; color: #4ade80; transition: opacity 0.5s;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Финансовый Терминал</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body {
+background-color: #000;
+color: #fff;
+font-family: 'Segoe UI', system-ui, sans-serif;
+display: flex;
+justify-content: center;
+padding: 20px;
+margin: 0;
+min-height: 100vh;
+}
+.dashboard {
+width: 100%;
+max-width: 850px;
+display: flex;
+flex-direction: column;
+}
+h1 { text-align: center; font-size: 24px; margin: 10px 0 5px 0; color: #eee; }
+.header-info { text-align: center; color: #666; font-size: 12px; margin-bottom: 25px; }
+/* ВЕРХНЯЯ ПЛАШКА */
+.info-bar {
+margin-bottom: 30px;
+background-color: #111;
+border-radius: 24px;
+padding: 20px 0;
+border: 1px solid #222;
+display: grid;
+grid-template-columns: 1.2fr 1fr 1.5fr;
+align-items: center;
+}
+.info-col {
+padding: 0 25px;
+display: flex;
+align-items: center;
+gap: 15px;
+}
+.info-col:not(:last-child) {
+border-right: 1px solid #1a1a1a;
+}
+.info-icon { width: 38px; height: 38px; opacity: 0.9; }
+.info-content { display: flex; flex-direction: column; }
+/* Стили даты */
+.date-main { font-size: 18px; font-weight: 600; color: #fff; }
+.date-main span { color: #4ade80; }
+.date-sub { font-size: 12px; color: #888; margin-top: 4px; text-transform: capitalize; }
+/* Стили погоды */
+.weather-loc { font-size: 11px; color: #888; margin-bottom: 2px; }
+.weather-temp { font-size: 22px; font-weight: 700; color: #fff; }
+.weather-desc { font-size: 11px; color: #666; margin-top: 2px; }
+/* Стили праздников */
+.holiday-title { font-size: 11px; color: #888; margin-bottom: 6px; }
+.holiday-list { margin: 0; padding: 0; list-style: none; }
+.holiday-item {
+color: #f59e0b;
+font-size: 13px;
+font-weight: 600;
+line-height: 1.3;
+display: flex;
+align-items: flex-start;
+gap: 6px;
+margin-bottom: 4px;
+}
+.holiday-item::before { content: "•"; color: #444; }
+.no-holiday { color: #666; font-size: 13px; font-style: italic; }
+/* Стили терминала */
+.currency-block { margin-bottom: 35px; }
+.tile {
+background-color: #111;
+border-radius: 24px;
+padding: 20px;
+border: 1px solid #222;
+display: flex;
+flex-direction: column;
+min-height: 160px;
+}
+.tile-header {
+display: flex;
+align-items: center;
+margin-bottom: 20px;
+padding-bottom: 15px;
+border-bottom: 1px solid #1a1a1a;
+}
+.currency-info { display: flex; align-items: center; gap: 15px; }
+.currency-icon { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: #222; }
+.currency-name { font-size: 16px; color: #999; font-weight: 500; }
+.currency-value { font-size: 20px; font-weight: 700; color: #4ade80; font-variant-numeric: tabular-nums; }
+.analytic-label { font-size: 10px; color: #444; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 15px; }
+.history-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; }
+.history-point { display: flex; flex-direction: column; align-items: center; }
+.history-point .date { font-size: 11px; color: #555; margin-bottom: 6px; }
+.history-point .val { font-size: 15px; color: #f59e0b; font-weight: 600; }
+.history-point.today .date { color: #fff; font-weight: bold; }
+.history-point.today .val { color: #4ade80; }
+.chart-container { width: 100%; height: 120px; margin-top: 5px; }
+.loading-overlay {
+position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+background: #000; display: flex; justify-content: center; align-items: center;
+z-index: 1000; color: #4ade80; transition: opacity 0.5s;
+}
+</style>
 </head>
 <body>
-
 <div id="loading" class="loading-overlay">Запуск терминала...</div>
-
 <div class="dashboard">
-    <h1>Market Terminal</h1>
-    <div class="header-info" id="update-time">Синхронизация...</div>
-
-    <div class="info-bar">
-        <div class="info-col">
-            <img src="https://img.icons8.com/fluency/96/calendar.png" class="info-icon">
-            <div class="info-content">
-                <div class="date-main" id="date-text">-- ------- ----</div>
-                <div class="date-sub" id="day-of-week">--------</div>
-            </div>
-        </div>
-        <div class="info-col">
-            <img id="weather-icon" src="https://img.icons8.com/fluency/96/partly-cloudy-day.png" class="info-icon">
-            <div class="info-content">
-                <div class="weather-loc">Москва</div>
-                <div class="weather-temp" id="weather-temp">--°C</div>
-                <div class="weather-desc" id="weather-desc">Загрузка...</div>
-            </div>
-        </div>
-        <div class="info-col">
-            <img src="https://img.icons8.com/fluency/96/guarantee.png" class="info-icon">
-            <div class="info-content">
-                <div class="holiday-title">События в России</div>
-                <div id="holiday-list" class="holiday-list">
-                    </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="dashboard-content"></div>
+<h1>Market Terminal</h1>
+<div class="header-info" id="update-time">Синхронизация...</div>
+<div class="info-bar">
+<div class="info-col">
+<img src="./icons/calendar.png" class="info-icon" alt="">
+<div class="info-content">
+<div class="date-main" id="date-text">-- ------- ----</div>
+<div class="date-sub" id="day-of-week">--------</div>
 </div>
-
+</div>
+<div class="info-col">
+<img id="weather-icon" src="./icons/weather-cloudy.png" class="info-icon" alt="">
+<div class="info-content">
+<div class="weather-loc">Москва</div>
+<div class="weather-temp" id="weather-temp">--°C</div>
+<div class="weather-desc" id="weather-desc">Загрузка...</div>
+</div>
+</div>
+<div class="info-col">
+<img src="./icons/holiday.png" class="info-icon" alt="">
+<div class="info-content">
+<div class="holiday-title">События в России</div>
+<div id="holiday-list" class="holiday-list">
+</div>
+</div>
+</div>
+</div>
+<div id="dashboard-content"></div>
+</div>
 <script>
-    // БАЗА ОФИЦИАЛЬНЫХ И ПРОФЕССИОНАЛЬНЫХ ПРАЗДНИКОВ
-    const HOLIDAYS_DATA = {
-        "01-01": ["Новый год"], "01-07": ["Рождество Христово"],
-        "01-12": ["День работника прокуратуры РФ"],
-        "02-08": ["День российской науки"],
-        "02-23": ["День защитника Отечества"],
-        "03-08": ["Международный женский день"],
-        "04-12": ["День космонавтики"],
-        "04-24": ["День кадровика (неофициальный)"],
-        "04-25": ["День дочери", "Международный день ДНК"],
-        "04-26": ["День нотариата", "День сметчика"],
-        "05-01": ["Праздник Весны и Труда"],
-        "05-07": ["День радио"],
-        "05-09": ["День Победы"],
-        "05-24": ["День кадровика (официальный)"],
-        "05-28": ["День пограничника"],
-        "06-01": ["Международный день защиты детей"],
-        "06-08": ["День социального работника"],
-        "06-12": ["День России"],
-        "07-25": ["День сотрудника органов следствия РФ"],
-        "08-01": ["День инкассатора"],
-        "08-22": ["День Государственного флага РФ"],
-        "09-01": ["День знаний"],
-        "09-13": ["День программиста"], // В високосные годы 12 сентября, но чаще 13-го
-        "10-05": ["День учителя"],
-        "10-25": ["День таможенника РФ"],
-        "11-04": ["День народного единства"],
-        "11-10": ["День сотрудника органов внутренних дел РФ"],
-        "11-21": ["День работника налоговых органов РФ"],
-        "12-12": ["День Конституции РФ"],
-        "12-22": ["День энергетика"],
-        "12-31": ["Новогодние каникулы"]
-        // Вы можете легко дополнять этот список нужными датами в формате "ММ-ДД"
-    };
+// БАЗА ОФИЦИАЛЬНЫХ И ПРОФЕССИОНАЛЬНЫХ ПРАЗДНИКОВ
+const HOLIDAYS_DATA = {
+"01-01": ["Новый год"], "01-07": ["Рождество Христово"],
+"01-12": ["День работника прокуратуры РФ"],
+"02-08": ["День российской науки"],
+"02-23": ["День защитника Отечества"],
+"03-08": ["Международный женский день"],
+"04-12": ["День космонавтики"],
+"04-24": ["День кадровика (неофициальный)"],
+"04-25": ["День дочери", "Международный день ДНК"],
+"04-26": ["День нотариата", "День сметчика"],
+"05-01": ["Праздник Весны и Труда"],
+"05-07": ["День радио"],
+"05-09": ["День Победы"],
+"05-24": ["День кадровика (официальный)"],
+"05-28": ["День пограничника"],
+"06-01": ["Международный день защиты детей"],
+"06-08": ["День социального работника"],
+"06-12": ["День России"],
+"07-25": ["День сотрудника органов следствия РФ"],
+"08-01": ["День инкассатора"],
+"08-22": ["День Государственного флага РФ"],
+"09-01": ["День знаний"],
+"09-13": ["День программиста"], // В високосные годы 12 сентября, но чаще 13-го
+"10-05": ["День учителя"],
+"10-25": ["День таможенника РФ"],
+"11-04": ["День народного единства"],
+"11-10": ["День сотрудника органов внутренних дел РФ"],
+"11-21": ["День работника налоговых органов РФ"],
+"12-12": ["День Конституции РФ"],
+"12-22": ["День энергетика"],
+"12-31": ["Новогодние каникулы"]
+// Вы можете легко дополнять этот список нужными датами в формате "ММ-ДД"
+};
 
-    const ICONS = {
-        USD: './icons/usd.svg', EUR: './icons/eur.svg', CNY: './icons/cny.svg',
-        BTC: './icons/btc.png', TON: './icons/ton.png', OIL: './icons/oil.png', GAS: './icons/gas.png'
-    };
-    
-    const CDN_FALLBACK = {
-        USD: 'https://hatscripts.github.io/circle-flags/flags/us.svg',
-        EUR: 'https://hatscripts.github.io/circle-flags/flags/eu.svg',
-        CNY: 'https://hatscripts.github.io/circle-flags/flags/cn.svg',
-        BTC: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/btc.png',
-        TON: 'https://assets.coincap.io/assets/icons/ton@2x.png',
-        OIL: 'https://img.icons8.com/fluency/96/oil-industry.png',
-        GAS: 'https://img.icons8.com/fluency/96/gas-industry.png'
-    };
+// Все иконки теперь хранятся локально в папке /icons.
+// Запустите download-icons.sh один раз, чтобы скачать их все.
+const ICONS = {
+USD: './icons/usd.svg', EUR: './icons/eur.svg', CNY: './icons/cny.svg',
+BTC: './icons/btc.png', TON: './icons/ton.png', OIL: './icons/oil.png', GAS: './icons/gas.png'
+};
 
-    const PAIRS = [
-        { id: 'usd', type: 'row', name: 'USD / RUB', icon: 'USD', symbol: '₽' },
-        { id: 'eur', type: 'row', name: 'EUR / RUB', icon: 'EUR', symbol: '₽' },
-        { id: 'cny', type: 'row', name: 'CNY / RUB', icon: 'CNY', symbol: '₽' },
-        { id: 'btc', type: 'chart', name: 'BTC / USD', icon: 'BTC', symbol: '$', color: '#f59e0b' },
-        { id: 'ton', type: 'chart', name: 'TON / RUB', icon: 'TON', symbol: '₽', color: '#0ea5e9' },
-        { id: 'oil', type: 'chart', name: 'Brent Oil', icon: 'OIL', symbol: '$', color: '#ffffff' },
-        { id: 'gas', type: 'chart', name: 'Nat Gas', icon: 'GAS', symbol: '$', color: '#4ade80' }
-    ];
+// Карта иконок погоды (Open-Meteo weather codes -> локальный файл)
+const WEATHER_ICONS = {
+0: './icons/weather-clear.png',
+1: './icons/weather-clear.png',
+2: './icons/weather-cloudy.png',
+3: './icons/weather-overcast.png',
+61: './icons/weather-rain.png',
+71: './icons/weather-snow.png'
+};
 
-    const charts = {};
+const PAIRS = [
+{ id: 'usd', type: 'row', name: 'USD / RUB', icon: 'USD', symbol: '₽' },
+{ id: 'eur', type: 'row', name: 'EUR / RUB', icon: 'EUR', symbol: '₽' },
+{ id: 'cny', type: 'row', name: 'CNY / RUB', icon: 'CNY', symbol: '₽' },
+{ id: 'btc', type: 'chart', name: 'BTC / USD', icon: 'BTC', symbol: '$', color: '#f59e0b' },
+{ id: 'ton', type: 'chart', name: 'TON / RUB', icon: 'TON', symbol: '₽', color: '#0ea5e9' },
+{ id: 'oil', type: 'chart', name: 'Brent Oil', icon: 'OIL', symbol: '$', color: '#ffffff' },
+{ id: 'gas', type: 'chart', name: 'Nat Gas', icon: 'GAS', symbol: '$', color: '#4ade80' }
+];
 
-    function buildDashboard() {
-        const container = document.getElementById('dashboard-content');
-        let html = '';
-        PAIRS.forEach(pair => {
-            const analyticContent = pair.type === 'row' 
-                ? `<div id="row-${pair.id}" class="history-row"></div>`
-                : `<div class="chart-container"><canvas id="chart-${pair.id}"></canvas></div>`;
+const charts = {};
 
-            html += `
-            <div class="currency-block">
-                <div class="tile">
-                    <div class="tile-header">
-                        <div class="currency-info">
-                            <img src="${ICONS[pair.icon]}" class="currency-icon" onerror="this.src='${CDN_FALLBACK[pair.icon]}'">
-                            <span class="currency-name">${pair.name}</span>
-                            <span class="currency-value" id="val-${pair.id}">--</span>
-                        </div>
-                    </div>
-                    <div class="analytic-label">${pair.type === 'row' ? 'История (7 дней)' : 'Тренд за 48 часов'}</div>
-                    ${analyticContent}
-                </div>
-            </div>`;
-        });
-        container.innerHTML = html;
-    }
+function buildDashboard() {
+const container = document.getElementById('dashboard-content');
+let html = '';
+PAIRS.forEach(pair => {
+const analyticContent = pair.type === 'row'
+? `<div id="row-${pair.id}" class="history-row"></div>`
+: `<div class="chart-container"><canvas id="chart-${pair.id}"></canvas></div>`;
+html += `
+<div class="currency-block">
+<div class="tile">
+<div class="tile-header">
+<div class="currency-info">
+<img src="${ICONS[pair.icon]}" class="currency-icon" alt="">
+<span class="currency-name">${pair.name}</span>
+<span class="currency-value" id="val-${pair.id}">--</span>
+</div>
+</div>
+<div class="analytic-label">${pair.type === 'row' ? 'История (7 дней)' : 'Тренд за 48 часов'}</div>
+${analyticContent}
+</div>
+</div>`;
+});
+container.innerHTML = html;
+}
 
-    async function updateInfoBar() {
-        const now = new Date();
-        
-        // 1. Дата
-        const day = now.getDate();
-        const month = now.toLocaleDateString('ru-RU', { month: 'long' });
-        const year = now.getFullYear();
-        document.getElementById('date-text').innerHTML = `<span>${day}</span> ${month} ${year}`;
-        document.getElementById('day-of-week').innerText = now.toLocaleDateString('ru-RU', { weekday: 'long' });
+async function updateInfoBar() {
+const now = new Date();
 
-        // 2. Погода
-        try {
-            const wRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude=55.75&longitude=37.61&current_weather=true');
-            const wData = await wRes.json();
-            const temp = Math.round(wData.current_weather.temperature);
-            document.getElementById('weather-temp').innerText = `${temp > 0 ? '+' : ''}${temp}°C`;
-            const codes = { 0: "Ясно", 1: "Преимущественно ясно", 2: "Облачно", 3: "Пасмурно", 61: "Дождь", 71: "Снег" };
-            document.getElementById('weather-desc').innerText = codes[wData.current_weather.weathercode] || "Облачно";
-        } catch (e) { console.error("Weather error", e); }
+// 1. Дата
+const day = now.getDate();
+const month = now.toLocaleDateString('ru-RU', { month: 'long' });
+const year = now.getFullYear();
+document.getElementById('date-text').innerHTML = `<span>${day}</span> ${month} ${year}`;
+document.getElementById('day-of-week').innerText = now.toLocaleDateString('ru-RU', { weekday: 'long' });
 
-        // 3. Праздники (Официальные и профессиональные)
-        const dateKey = `${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-        const todayHolidays = HOLIDAYS_DATA[dateKey];
-        
-        const holidayContainer = document.getElementById('holiday-list');
-        if (todayHolidays && todayHolidays.length > 0) {
-            holidayContainer.innerHTML = todayHolidays.map(h => `<div class="holiday-item">${h}</div>`).join('');
-        } else {
-            // Если на текущую дату нет записей в базе
-            holidayContainer.innerHTML = `<div class="no-holiday">Сегодня праздников нет</div>`;
-        }
-    }
+// 2. Погода
+try {
+const wRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude=55.75&longitude=37.61&current_weather=true');
+const wData = await wRes.json();
+const temp = Math.round(wData.current_weather.temperature);
+document.getElementById('weather-temp').innerText = `${temp > 0 ? '+' : ''}${temp}°C`;
+const code = wData.current_weather.weathercode;
+const codes = { 0: "Ясно", 1: "Преимущественно ясно", 2: "Облачно", 3: "Пасмурно", 61: "Дождь", 71: "Снег" };
+document.getElementById('weather-desc').innerText = codes[code] || "Облачно";
+// Локальная иконка погоды в зависимости от кода (без обращения к стороннему CDN)
+document.getElementById('weather-icon').src = WEATHER_ICONS[code] || WEATHER_ICONS[2];
+} catch (e) { console.error("Weather error", e); }
 
-    function initCharts() {
-        Chart.defaults.color = '#555';
-        PAIRS.filter(p => p.type === 'chart').forEach(pair => {
-            const ctx = document.getElementById(`chart-${pair.id}`).getContext('2d');
-            charts[pair.id] = new Chart(ctx, {
-                type: 'line',
-                data: { labels: [], datasets: [{ data: [], borderColor: pair.color, borderWidth: 1.5, tension: 0.3, pointRadius: 0 }] },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { 
-                        x: { display: true, grid: { display: false }, ticks: { maxTicksLimit: 6, color: '#444' } },
-                        y: { display: true, grid: { color: '#1a1a1a' }, position: 'right', ticks: { color: '#666' } }
-                    }
-                }
-            });
-        });
-    }
+// 3. Праздники (Официальные и профессиональные)
+const dateKey = `${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+const todayHolidays = HOLIDAYS_DATA[dateKey];
+const holidayContainer = document.getElementById('holiday-list');
+if (todayHolidays && todayHolidays.length > 0) {
+holidayContainer.innerHTML = todayHolidays.map(h => `<div class="holiday-item">${h}</div>`).join('');
+} else {
+// Если на текущую дату нет записей в базе
+holidayContainer.innerHTML = `<div class="no-holiday">Сегодня праздников нет</div>`;
+}
+}
 
-    async function update() {
-        try {
-            updateInfoBar();
-            const resFiat = await fetch('https://open.er-api.com/v6/latest/USD');
-            const f = await resFiat.json();
-            const rub = f.rates.RUB;
+function initCharts() {
+Chart.defaults.color = '#555';
+PAIRS.filter(p => p.type === 'chart').forEach(pair => {
+const ctx = document.getElementById(`chart-${pair.id}`).getContext('2d');
+charts[pair.id] = new Chart(ctx, {
+type: 'line',
+data: { labels: [], datasets: [{ data: [], borderColor: pair.color, borderWidth: 1.5, tension: 0.3, pointRadius: 0 }] },
+options: {
+responsive: true, maintainAspectRatio: false,
+plugins: { legend: { display: false } },
+scales: {
+x: { display: true, grid: { display: false }, ticks: { maxTicksLimit: 6, color: '#444' } },
+y: { display: true, grid: { color: '#1a1a1a' }, position: 'right', ticks: { color: '#666' } }
+}
+}
+});
+});
+}
 
-            const resC = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,the-open-network,binance-peg-brent-crude-oil,natural-gas&vs_currencies=usd,rub');
-            const c = await resC.json();
+async function update() {
+try {
+updateInfoBar();
+const resFiat = await fetch('https://open.er-api.com/v6/latest/USD');
+const f = await resFiat.json();
+const rub = f.rates.RUB;
+const resC = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,the-open-network,binance-peg-brent-crude-oil,natural-gas&vs_currencies=usd,rub');
+const c = await resC.json();
+const cur = {
+usd: rub, eur: rub/f.rates.EUR, cny: rub/f.rates.CNY,
+btc: c.bitcoin.usd, ton: c['the-open-network'].rub,
+oil: c['binance-peg-brent-crude-oil']?.usd || 84.15,
+gas: 2.15
+};
 
-            const cur = {
-                usd: rub, eur: rub/f.rates.EUR, cny: rub/f.rates.CNY,
-                btc: c.bitcoin.usd, ton: c['the-open-network'].rub,
-                oil: c['binance-peg-brent-crude-oil']?.usd || 84.15,
-                gas: 2.15
-            };
-            
-            PAIRS.forEach(p => {
-                const el = document.getElementById(`val-${p.id}`);
-                if (p.id === 'btc') el.innerText = '$' + cur[p.id].toLocaleString();
-                else if (p.id === 'gas') el.innerText = '$' + cur[p.id].toFixed(3);
-                else el.innerText = (p.symbol === '$' ? '$' : '') + cur[p.id].toFixed(2) + (p.symbol === '₽' ? ' ₽' : '');
-            });
+PAIRS.forEach(p => {
+const el = document.getElementById(`val-${p.id}`);
+if (p.id === 'btc') el.innerText = '$' + cur[p.id].toLocaleString();
+else if (p.id === 'gas') el.innerText = '$' + cur[p.id].toFixed(3);
+else el.innerText = (p.symbol === '$' ? '$' : '') + cur[p.id].toFixed(2) + (p.symbol === '₽' ? ' ₽' : '');
+});
 
-            ['usd', 'eur', 'cny'].forEach(id => {
-                const row = document.getElementById(`row-${id}`);
-                if (!row) return;
-                let html = '';
-                for(let i = 6; i >= 0; i--) {
-                    const d = new Date(); d.setDate(d.getDate() - i);
-                    const label = i === 0 ? 'Сегодня' : `${d.getDate()}.${d.getMonth()+1}`;
-                    const mockVal = (cur[id] * (1 + (Math.random()*0.01 - 0.005))).toFixed(2);
-                    html += `<div class="history-point ${i===0?'today':''}">
-                                <div class="date">${label}</div>
-                                <div class="val">${i===0 ? cur[id].toFixed(2) : mockVal}</div>
-                             </div>`;
-                }
-                row.innerHTML = html;
-            });
+['usd', 'eur', 'cny'].forEach(id => {
+const row = document.getElementById(`row-${id}`);
+if (!row) return;
+let html = '';
+for(let i = 6; i >= 0; i--) {
+const d = new Date(); d.setDate(d.getDate() - i);
+const label = i === 0 ? 'Сегодня' : `${d.getDate()}.${d.getMonth()+1}`;
+const mockVal = (cur[id] * (1 + (Math.random()*0.01 - 0.005))).toFixed(2);
+html += `<div class="history-point ${i===0?'today':''}">
+<div class="date">${label}</div>
+<div class="val">${i===0 ? cur[id].toFixed(2) : mockVal}</div>
+</div>`;
+}
+row.innerHTML = html;
+});
 
-            const timeLabels = Array.from({length: 24}, (_, i) => `${i*2}:00`); 
-            PAIRS.filter(p => p.type === 'chart').forEach(p => {
-                const base = cur[p.id];
-                charts[p.id].data.labels = timeLabels;
-                charts[p.id].data.datasets[0].data = Array.from({length: 24}, () => base * (1 + (Math.random()*0.02 - 0.01)));
-                charts[p.id].update();
-            });
+const timeLabels = Array.from({length: 24}, (_, i) => `${i*2}:00`);
+PAIRS.filter(p => p.type === 'chart').forEach(p => {
+const base = cur[p.id];
+charts[p.id].data.labels = timeLabels;
+charts[p.id].data.datasets[0].data = Array.from({length: 24}, () => base * (1 + (Math.random()*0.02 - 0.01)));
+charts[p.id].update();
+});
 
-            document.getElementById('update-time').innerText = `Sync: ${new Date().toLocaleTimeString()}`;
-            document.getElementById('loading').style.opacity = '0';
-            setTimeout(() => document.getElementById('loading').style.display = 'none', 500);
-        } catch(e) { console.error(e); }
-    }
+document.getElementById('update-time').innerText = `Sync: ${new Date().toLocaleTimeString()}`;
+document.getElementById('loading').style.opacity = '0';
+setTimeout(() => document.getElementById('loading').style.display = 'none', 500);
+} catch(e) { console.error(e); }
+}
 
-    buildDashboard();
-    initCharts();
-    update();
-    setInterval(update, 60000);
+buildDashboard();
+initCharts();
+update();
+setInterval(update, 60000);
 </script>
 </body>
 </html>
